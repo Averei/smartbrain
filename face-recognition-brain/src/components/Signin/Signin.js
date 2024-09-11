@@ -5,7 +5,8 @@ class Signin extends React.Component {
     super(props);
     this.state = {
       signInEmail: "",
-      signInPassword: ""
+      signInPassword: "",
+      errorMessage: "no empty fields"
     };
   }
 
