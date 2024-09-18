@@ -25,7 +25,14 @@ const db = knex({
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: 'https://smartbrain-pjgm.onrender.com', // Allow only this origin
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
 
 app.get('/', (req, res) => {res.send(database.users)})
 app.post("/signin", signin.handleSignin (db, bcrypt));
