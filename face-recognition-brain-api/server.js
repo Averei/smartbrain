@@ -27,10 +27,11 @@ const app = express();
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: 'https://smartbrain-pjgm.onrender.com', // Allow only this origin
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify allowed methods
-  credentials: true,
-  optionsSuccessStatus: 200
+  origin: 'https://smartbrain-pjgm.onrender.com', // Only allow this origin
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow specific methods
+  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization", // Specify allowed headers
+  credentials: true, // Allow cookies or credentials
+  optionsSuccessStatus: 200 // Some legacy browsers choke on a 204 status
 };
 
 app.use(cors(corsOptions));
