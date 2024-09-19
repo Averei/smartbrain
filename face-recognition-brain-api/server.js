@@ -28,7 +28,9 @@ app.use(bodyParser.json());
 
 const corsOptions = {
   origin: 'https://smartbrain-pjgm.onrender.com', // Allow only this origin
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify allowed methods
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
