@@ -30,12 +30,14 @@ class Signin extends React.Component {
       })
     })
     .then(response => {
+      console.log('Response status:', response.status); // Log the response status
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok. Status: ${response.status}`);
       }
       return response.text(); // Convert response to text
     })
     .then(text => {
+      console.log('Response text:', text); // Log the response text
       if (text) {
         const user = JSON.parse(text);  // Parse JSON if response body is not empty
         if (user.id) {
@@ -50,6 +52,7 @@ class Signin extends React.Component {
       console.error("Error logging in: ", err);
     });
   };
+  
   
   render() {
     const { onRouteChange } = this.props;
