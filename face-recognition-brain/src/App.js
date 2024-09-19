@@ -44,14 +44,16 @@ class App extends Component {
   };
 
   calculateFaceLocation = (data) => {
-    if (!data || !data.outputs || !data.outputs[0].data || !data.outputs[0].data.regions) {
+    if (!data || !data.outputs || !data.outputs[0].data || !data.outputs[0].data.regions || data.outputs[0].data.regions.length === 0) {
       console.error("No face data found in the API response.");
       return {};
     }
+  
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
+  
     return {
       leftCol: clarifaiFace.left_col * width,
       topRow: clarifaiFace.top_row * height,
@@ -59,6 +61,7 @@ class App extends Component {
       bottomRow: height - (clarifaiFace.bottom_row * height)
     };
   };
+  
   
 
   displayFaceBox = box => {
@@ -80,8 +83,10 @@ class App extends Component {
     })
     .then(response => response.json())
     .then(response => {
-      console.log("Clarifai API Response:", response); // Add this line to log the response
-      if (response) {
+      console.log("Clarifai API Response:", response); // Log full API response
+  
+      if (response.outputs) {
+        this.displayFaceBox(this.calculateFaceLocation(response));
         fetch("https://smartbrains-la3q.onrender.com/image", {
           method: "put",
           headers: { "Content-Type": "application/json" },
@@ -94,10 +99,10 @@ class App extends Component {
           this.setState(Object.assign(this.state.user, { entries: count }));
         });
       }
-      this.displayFaceBox(this.calculateFaceLocation(response)); // The error is happening here
     })
     .catch(err => console.log(err));
   };
+  
 
   onRouteChange = route => {
     if (route === "signout") {
