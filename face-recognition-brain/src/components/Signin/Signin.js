@@ -5,8 +5,7 @@ class Signin extends React.Component {
     super(props);
     this.state = {
       signInEmail: "",
-      signInPassword: "",
-      errorMessage: "no empty fields"
+      signInPassword: ""
     };
   }
 
@@ -19,14 +18,14 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    console.log('Sending email:', this.state.email);
-    console.log('Sending password:', this.state.password);
+    console.log('Sending email:', this.state.signInEmail);
+    console.log('Sending password:', this.state.signInPassword);
     fetch("https://smartbrains-la3q.onrender.com/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password
+        email: this.state.signInEmail,   // Use correct state variables
+        password: this.state.signInPassword  // Use correct state variables
       })
     })
     .then(response => {
