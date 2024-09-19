@@ -15,24 +15,18 @@ const app = new Clarifai.App({
   }
 
   const handleImage = (req, res, db) => {
-    console.log('Request body:', req.body); // Log the request body for debugging
-    const { id } = req.body; // Ensure id is coming from the request body
-    if (!id) {
-      return res.status(400).json('User ID is required');
-    }
+    const { id } = req.body;
     db('users')
       .where('id', '=', id)
-      .increment('entries', 1) // Increment the entries count by 1
+      .increment('entries', 1)
       .returning('entries')
       .then(entries => {
-        console.log("Entries count:", entries),
-        res.json({ entries: parseInt(entries[0], 10) });  // Ensure entries is returned as a number
+        console.log('Updated entries:', entries);  // Add a console log for debugging
+        res.json(parseInt(entries[0], 10));        // Ensure entries is returned as a number
       })
-      .catch(err => {
-        console.error('Error updating user entries:', err);
-        res.status(400).json('Unable to get entries');
-      });
+      .catch(err => res.status(400).json('Unable to get entries'));
   };
+  
   
   module.exports = {
     handleImage, 

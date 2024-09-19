@@ -95,14 +95,18 @@ class App extends Component {
           })
         })
         .then(response => response.json())
-        .then(data => {
-          if (data.entries !== undefined) {  // Ensure 'entries' exists in the response
-            this.setState(Object.assign(this.state.user, { entries: data.entries }));
+        .then(count => {
+          console.log('Updated entries:', count);  // Debugging the response from the backend
+          if (typeof count === 'number') {         // Ensure count is a number
+            this.setState(Object.assign(this.state.user, { entries: count }));
           } else {
-            console.error('No entries field in the response:', data);
+            console.error('Entries is not a number:', count);
           }
         })
-        .catch(err => console.log("Error updating entries:", err));
+        .catch(err => console.log('Error updating entries:', err));
+      }
+    })
+    .catch(err => console.log(err));
   };
   
 
