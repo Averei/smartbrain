@@ -74,6 +74,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
+    
     fetch("https://smartbrains-la3q.onrender.com/imageurl", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -84,9 +85,11 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       console.log("Clarifai API Response:", response); // Log full API response
-  
+
       if (response.outputs) {
         this.displayFaceBox(this.calculateFaceLocation(response));
+        
+        // Update entries by making a PUT request
         fetch("https://smartbrains-la3q.onrender.com/image", {
           method: "put",
           headers: { "Content-Type": "application/json" },
@@ -97,10 +100,13 @@ class App extends Component {
         .then(response => response.json())
         .then(data => {
           console.log('Updated entries:', data); // Log updated entries
-          if (typeof data.entries === 'number') {  // Ensure entries is a number
-            this.setState(Object.assign(this.state.user, { entries: +count.entries }));
+          
+          // Safely extract and update the entries count
+          const entriesCount = parseInt(data.entries, 10);
+          if (!isNaN(entriesCount)) {
+            this.setState(Object.assign(this.state.user, { entries: entriesCount }));
           } else {
-            console.error('Entries is not a number:', data.entries);
+            console.error('Entries is not a valid number:', data.entries);
           }
         })
         .catch(err => console.log('Error updating entries:', err));
