@@ -12,8 +12,9 @@ const handleRegister = (req, res, db, bcrypt) => {
     .into('login')
     .returning('email')
     .then(loginEmail => {
+      // Ensure that only the email string is inserted into the users table
       return trx('users').returning('*').insert({
-        email: loginEmail[0], // This returns the email from the login table
+        email: loginEmail[0],  // loginEmail[0] is already a string if correct
         name: name,
         joined: new Date()
       }).then(user => {
