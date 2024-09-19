@@ -20,13 +20,13 @@ const app = new Clarifai.App({
     if (!id) {
       return res.status(400).json('User ID is required');
     }
-  
     db('users')
       .where('id', '=', id)
       .increment('entries', 1) // Increment the entries count by 1
       .returning('entries')
       .then(entries => {
-        res.json(entries[0]); // Return the updated entries count
+        console.log("Entries count:", entries),
+        res.json({ entries: parseInt(entries[0], 10) });  // Ensure entries is returned as a number
       })
       .catch(err => {
         console.error('Error updating user entries:', err);
