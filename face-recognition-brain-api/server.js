@@ -36,7 +36,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-app.get('/', (req, res) => {res.send(database.users)})
+app.get('/', (req, res) => {
+  db.select('*').from('user')
+    .then(data => res.json(data))
+    .catch(err => res.status(400).json('Error fetching users'));
+});
 app.post("/signin", signin.handleSignin (db, bcrypt));
 app.post("/register", (req, res) => {register.handleRegister(req, res, db, bcrypt)});
 app.get("/profile/:id",(req, res) => {profile.handleProfile(req,res,db)});
