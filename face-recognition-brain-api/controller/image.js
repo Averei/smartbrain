@@ -14,17 +14,26 @@ const app = new Clarifai.App({
     .catch(err => res.status(400).json('unable to work with API'))
   }
 
-const handleImage = (req, res, db) => {
-    const { id } = req.body;
-    db('user').where('id','=', id)
-    .increment('entries', 1)
-    .returning('entries')
-    .then(entries =>{
-      res.json(entries[0].entries); 
-    })
-    .catch(err => res.status(400).json('unable to get entries'))
-  }
-
+  const handleImage = (req, res, db) => {
+    console.log('Request body:', req.body); // Log the request body for debugging
+    const { id } = req.body; // Ensure id is coming from the request body
+    if (!id) {
+      return res.status(400).json('User ID is required');
+    }
+  
+    db('users')
+      .where('id', '=', id)
+      .increment('entries', 1) // Increment the entries count by 1
+      .returning('entries')
+      .then(entries => {
+        res.json(entries[0]); // Return the updated entries count
+      })
+      .catch(err => {
+        console.error('Error updating user entries:', err);
+        res.status(400).json('Unable to get entries');
+      });
+  };
+  
   module.exports = {
     handleImage, 
     handleApiCall
