@@ -19,14 +19,14 @@ const app = new Clarifai.App({
     db('users')
       .where('id', '=', id)
       .increment('entries', 1)
-      .returning('entries')
+      .returning('entries')  // Make sure this returns the updated entries count
       .then(entries => {
-        console.log('Updated entries:', entries);  // Add a console log for debugging
-        res.json(parseInt(entries[0], 10));        // Ensure entries is returned as a number
+        console.log('Updated entries:', entries); // Add log to debug
+        res.json({ entries: entries[0] });        // Correctly return the updated entries
       })
       .catch(err => res.status(400).json('Unable to get entries'));
-  };
-  
+};
+
   
   module.exports = {
     handleImage, 

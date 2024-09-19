@@ -84,7 +84,7 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       console.log("Clarifai API Response:", response); // Log full API response
-  
+
       if (response.outputs) {
         this.displayFaceBox(this.calculateFaceLocation(response));
         fetch("https://smartbrains-la3q.onrender.com/image", {
@@ -95,20 +95,20 @@ class App extends Component {
           })
         })
         .then(response => response.json())
-        .then(count => {
-          console.log('Updated entries:', count);  // Debugging the response from the backend
-          if (typeof count === 'number') {         // Ensure count is a number
-            this.setState(Object.assign(this.state.user, { entries: count }));
+        .then(data => {
+          console.log('Updated entries:', data); // Log full response to debug
+          if (typeof data.entries === 'number') {  // Ensure entries is a number
+            this.setState(Object.assign(this.state.user, { entries: data.entries }));
           } else {
-            console.error('Entries is not a number:', count);
+            console.error('Entries is not a number:', data.entries);
           }
         })
         .catch(err => console.log('Error updating entries:', err));
       }
     })
     .catch(err => console.log(err));
-  };
-  
+};
+
 
   onRouteChange = route => {
     if (route === "signout") {
