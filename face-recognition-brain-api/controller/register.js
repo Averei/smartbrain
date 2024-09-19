@@ -13,7 +13,7 @@ const handleRegister = (req, res, db, bcrypt) => {
     .returning('email')
     .then(loginEmail => {
       return trx('users').returning('*').insert({
-        email: loginEmail[0],
+        email: loginEmail[0], // This returns the email from the login table
         name: name,
         joined: new Date()
       }).then(user => {
@@ -31,4 +31,9 @@ const handleRegister = (req, res, db, bcrypt) => {
     console.error('Transaction error:', err);
     res.status(400).json('unable to register');
   });
+};
+
+// Make sure to export the function here
+module.exports = {
+  handleRegister
 };
