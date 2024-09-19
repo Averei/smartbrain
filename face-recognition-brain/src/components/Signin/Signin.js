@@ -19,22 +19,26 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
-    fetch("https://smartbrains-la3q.onrender.com/signin", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
+    fetch('https://smartbrains-la3q.onrender.com/signin', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.state.signInEmail,
         password: this.state.signInPassword
       })
     })
       .then(response => response.json())
-      .then(data => {
-        if (data.id) {
-          this.props.loadUser(data);
-          this.props.onRouteChange("home");
+      .then(user => {
+        if (user.id) {
+          this.props.loadUser(user);
+          this.props.onRouteChange('home');
+        } else {
+          console.log('wrong credentials');  // Log invalid sign-in attempts
         }
-      });
+      })
+      .catch(err => console.log(err));
   };
+  
 
   render() {
     const { onRouteChange } = this.props;
