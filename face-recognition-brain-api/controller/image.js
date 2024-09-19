@@ -13,32 +13,33 @@ const app = new Clarifai.App({
     })
     .catch(err => res.status(400).json('unable to work with API'))
   }
-  
-  const handleImage = (req, res, db) => {
-    const { id } = req.body;
-    db('users')
-      .where('id', '=', id)
-      .increment('entries', 1)
-      .then(() => {
-        return db('users')
-          .select('entries')
-          .where('id', '=', id);
-      })
-      .then(entries => {
-        console.log('Updated entries:', entries); // Log the returned entries
-        if (entries && entries.length > 0 && !isNaN(entries[0].entries)) {
-          res.json({ entries: parseInt(entries[0].entries, 10) });  // Return valid entries
-        } else {
-          console.error('Invalid entries value:', entries);
-          res.status(400).json('Unable to get valid entries');
+
+const handleImage = (req, res, db) => {
+  const { id } = req.body;
+  db('users')
+    .where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+      console.log('Updated entries:', entries); // Log the returned entries
+      
+      // Ensure that entries[0] exists and is a number
+      if (entries && entries.length > 0 && entries[0].entries) {
+        const entryCount = parseInt(entries[0].entries, 10);
+        if (!isNaN(entryCount)) {
+          return res.json({ entries: entryCount });  // Return a valid number
         }
-      })
-      .catch(err => {
-        console.error('Error updating user entries:', err);
-        res.status(400).json('Unable to get entries');
-      });
-  };
-  
+      }
+      
+      console.error('Invalid entries value:', entries);
+      res.status(400).json('Unable to get valid entries');
+    })
+    .catch(err => {
+      console.error('Error updating user entries:', err);
+      res.status(400).json('Unable to get entries');
+    });
+};
+
   
   module.exports = {
     handleImage, 

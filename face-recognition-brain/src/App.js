@@ -73,47 +73,48 @@ class App extends Component {
   };
 
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
-    
-    fetch("https://smartbrains-la3q.onrender.com/imageurl", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: this.state.input
-      })
+  this.setState({ imageUrl: this.state.input });
+  
+  fetch("https://smartbrains-la3q.onrender.com/imageurl", {
+    method: "post",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: this.state.input
     })
-    .then(response => response.json())
-    .then(response => {
-      console.log("Clarifai API Response:", response); // Log full API response
+  })
+  .then(response => response.json())
+  .then(response => {
+    console.log("Clarifai API Response:", response); // Log full API response
 
-      if (response.outputs) {
-        this.displayFaceBox(this.calculateFaceLocation(response));
+    if (response.outputs) {
+      this.displayFaceBox(this.calculateFaceLocation(response));
+      
+      // Update entries by making a PUT request
+      fetch("https://smartbrains-la3q.onrender.com/image", {
+        method: "put",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: this.state.user.id
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Updated entries:', data); // Log updated entries
         
-        // Update entries by making a PUT request
-        fetch("https://smartbrains-la3q.onrender.com/image", {
-          method: "put",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: this.state.user.id
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Updated entries:', data); // Log updated entries
-          
-          // Safely extract and update the entries count
-          const entriesCount = parseInt(data.entries, 10);
-          if (!isNaN(entriesCount)) {
-            this.setState(Object.assign(this.state.user, { entries: entriesCount }));
-          } else {
-            console.error('Entries is not a valid number:', data.entries);
-          }
-        })
-        .catch(err => console.log('Error updating entries:', err));
-      }
-    })
-    .catch(err => console.log(err));
+        // Safely extract and update the entries count
+        const entriesCount = parseInt(data.entries, 10);
+        if (!isNaN(entriesCount)) {
+          this.setState(Object.assign(this.state.user, { entries: entriesCount }));
+        } else {
+          console.error('Entries is not a valid number:', data.entries);
+        }
+      })
+      .catch(err => console.log('Error updating entries:', err));
+    }
+  })
+  .catch(err => console.log(err));
 };
+
 
 
   onRouteChange = route => {
