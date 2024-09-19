@@ -20,24 +20,30 @@ class Signin extends React.Component {
   onSubmitSignIn = () => {
     console.log('Sending email:', this.state.signInEmail);
     console.log('Sending password:', this.state.signInPassword);
+    
     fetch("https://smartbrains-la3q.onrender.com/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: this.state.signInEmail,   // Use correct state variables
-        password: this.state.signInPassword  // Use correct state variables
+        email: this.state.signInEmail,   
+        password: this.state.signInPassword  
       })
     })
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
+      return response.text(); // Convert response to text
     })
-    .then(user => {
-      if (user.id) {
-        this.props.loadUser(user);
-        this.props.onRouteChange("home");
+    .then(text => {
+      if (text) {
+        const user = JSON.parse(text);  // Parse JSON if response body is not empty
+        if (user.id) {
+          this.props.loadUser(user);
+          this.props.onRouteChange("home");
+        }
+      } else {
+        console.error('Empty response received');
       }
     })
     .catch(err => {
