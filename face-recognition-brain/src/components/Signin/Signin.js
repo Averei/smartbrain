@@ -19,6 +19,8 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
+    console.log('Sending email:', this.state.email);
+    console.log('Sending password:', this.state.password);
     fetch("https://smartbrains-la3q.onrender.com/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -31,7 +33,7 @@ class Signin extends React.Component {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();  // Ensure response is JSON
+      return response.json();
     })
     .then(user => {
       if (user.id) {
@@ -42,8 +44,8 @@ class Signin extends React.Component {
     .catch(err => {
       console.error("Error logging in: ", err);
     });
-};
-
+  };
+  
   render() {
     const { onRouteChange } = this.props;
     return (
