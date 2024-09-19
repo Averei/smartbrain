@@ -19,12 +19,15 @@ const app = new Clarifai.App({
     db('users')
       .where('id', '=', id)
       .increment('entries', 1)
-      .returning('entries')  // Make sure this returns the updated entries count
+      .returning('entries')
       .then(entries => {
-        console.log('Updated entries:', entries); // Add log to debug
-        res.json({ entries: entries[0] });        // Correctly return the updated entries
+        console.log('Updated entries:', entries); // Log the returned entries
+        res.json({ entries: parseInt(entries[0]) });  // Convert entries to an integer
       })
-      .catch(err => res.status(400).json('Unable to get entries'));
+      .catch(err => {
+        console.error('Error updating user entries:', err);
+        res.status(400).json('Unable to get entries');
+      });
 };
 
   

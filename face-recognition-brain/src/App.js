@@ -84,7 +84,7 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       console.log("Clarifai API Response:", response); // Log full API response
-
+  
       if (response.outputs) {
         this.displayFaceBox(this.calculateFaceLocation(response));
         fetch("https://smartbrains-la3q.onrender.com/image", {
@@ -96,9 +96,9 @@ class App extends Component {
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Updated entries:', data); // Log full response to debug
+          console.log('Updated entries:', data); // Log updated entries
           if (typeof data.entries === 'number') {  // Ensure entries is a number
-            this.setState(Object.assign(this.state.user, { entries: data.entries }));
+            this.setState(Object.assign(this.state.user, { entries: +count.entries }));
           } else {
             console.error('Entries is not a number:', data.entries);
           }
